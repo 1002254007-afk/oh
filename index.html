@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>דו"ח חכם - מכינות 'אחריי!' תשפ"ו</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Earthy Neutrals with AI Sparkle Accents -->
+    <!-- Application Structure Plan: 
+‎         - הוספת שכבת AI לניתוח נתונים בזמן אמת.
+‎         - שיפור ממשק המשתמש עם אלמנטים אינטראקטיביים של Gemini.
+‎         - שמירה על המבנה המקורי עם תוספת של "מרכז תובנות חכם".
+    -->
+    
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        .ai-sparkle {
+            background: linear-gradient(90deg, #f59e0b, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            border: 1px solid #f1f5f9;
+        }
+
+        .btn-ai {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-ai:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4);
+        }
+
+        .loading-dots:after {
+            content: '.';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60% { content: '...'; }
+            80%, 100% { content: ''; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl font-black text-slate-900">אחריי!</span>
+                <span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-bold uppercase">דו"ח תשפ"ו</span>
+            </div>
+            <nav class="hidden md:flex gap-8 text-sm font-semibold text-slate-600">
+                <a href="#overview" class="hover:text-indigo-600 transition">סקירה</a>
+                <a href="#ai-insights" class="text-indigo-600 flex items-center gap-1">✨ מרכז תובנות</a>
+                <a href="#gender" class="hover:text-indigo-600 transition">מגדר</a>
+                <a href="#mechinot" class="hover:text-indigo-600 transition">מכינות</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+
+        <!-- Section: AI Insights Center -->
+        <section id="ai-insights" class="scroll-mt-24">
+            <div class="card bg-gradient-to-br from-indigo-50 to-white border-indigo-100 overflow-hidden relative">
+                <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
+                <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div class="space-y-2 text-center md:text-right">
+                        <h2 class="text-2xl font-bold text-indigo-900">✨ ניתוח תובנות מבוסס בינה מלאכותית</h2>
+                        <p class="text-indigo-700/80">Gemini מנתח את נתוני המכינות ומייצר המלצות פעולה לצוות החינוכי.</p>
+                    </div>
+                    <button id="generateInsights" class="btn-ai shadow-lg" onclick="generateAIAnalysis()">
+                        <span>ייצר תובנות עומק ✨</span>
+                    </button>
+                </div>
+                
+                <div id="aiResponseContainer" class="mt-8 hidden">
+                    <div class="p-6 bg-white rounded-xl border border-indigo-100 shadow-inner min-h-[100px] text-slate-800 leading-relaxed whitespace-pre-wrap" id="aiOutput">
+                        <!-- AI Response will appear here -->
+                    </div>
+                    <div class="mt-4 flex justify-end gap-2 text-xs text-slate-400 italic">
+                        <span>הופק באמצעות Gemini-2.5-Flash</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section id="overview" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="card bg-white border-b-4 border-amber-400">
+                <h3 class="text-slate-500 font-bold mb-2">מוטיבציה משוקללת</h3>
+                <div class="text-5xl font-black text-slate-900">3.95<span class="text-lg font-normal text-slate-400 mr-2">/5</span></div>
+                <p class="text-sm text-green-600 mt-2 font-medium">↑ עליה של 2% משנה שעברה</p>
+            </div>
+            <div class="card bg-white border-b-4 border-indigo-400">
+                <h3 class="text-slate-500 font-bold mb-2">שייכות ל'אחריי'</h3>
+                <div class="text-5xl font-black text-slate-900">4.46<span class="text-lg font-normal text-slate-400 mr-2">/5</span></div>
+                <p class="text-sm text-slate-500 mt-2">מדד הליבה של התנועה</p>
+            </div>
+            <div class="card bg-white border-b-4 border-pink-400">
+                <h3 class="text-slate-500 font-bold mb-2">יחס נשים-גברים</h3>
+                <div class="text-5xl font-black text-slate-900">1.08<span class="text-lg font-normal text-slate-400 mr-2">נ/ג</span></div>
+                <p class="text-sm text-slate-500 mt-2">ייצוג נשי חזק במיוחד</p>
+            </div>
+        </section>
+
+        <!-- Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="card">
+                <h3 class="text-xl font-bold mb-6 flex justify-between items-center">
+                    <span>פרופיל המשיבים</span>
+                    <span class="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500">Radar Chart</span>
+                </h3>
+                <div class="chart-container">
+                    <canvas id="radarChart"></canvas>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="text-xl font-bold mb-6 flex justify-between items-center">
+                    <span>השוואה מגדרית</span>
+                    <span class="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500">Bar Chart</span>
+                </h3>
+                <div class="chart-container">
+                    <canvas id="genderBarChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Qualitative Section -->
+        <section id="voices" class="space-y-6">
+            <div class="flex justify-between items-end">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800">הקול האישי מהשטח</h2>
+                    <p class="text-slate-500 mt-1">מה החניכים אומרים על הבחירה שלהם?</p>
+                </div>
+                <button onclick="synthesizeQuotes()" class="text-indigo-600 font-bold hover:underline flex items-center gap-1">
+‎                    נרטיב AI ✨
+                </button>
+            </div>
+
+            <div id="narrativeContainer" class="hidden p-6 bg-indigo-900 text-indigo-100 rounded-2xl shadow-xl italic text-lg leading-relaxed relative overflow-hidden">
+                <div class="absolute -right-4 -top-4 opacity-10 text-8xl">"</div>
+                <div id="narrativeOutput"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="quotesGrid">
+                <!-- Standard quotes populate here -->
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- DATA & CONFIG ---
+        const apiKey = ""; // Environment provided
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'achrai-report-2026';
+
+        const mechinaStats = {
+            labels: ['מסוגלות', 'חוסן', 'שייכות לישראל', 'שייכות לקהילה', 'מוטיבציה פיקודית'],
+            averages: [4.05, 3.52, 4.15, 4.35, 3.90]
+        };
+
+        const rawQuotes = [
+‎            "להשתפר בתור בן אדם גם נפשית וגם פיזית, לחזק עקרונות חשובים.",
+‎            "בשביל ריבוי דעות, להכין את עצמי מנטלית פיזית ונפשית לשירות.",
+‎            "לצאת מאיזור הנוחות שלי, להתפתח בעצמי וללמוד לדבר מול קהל.",
+‎            "לעבור תהליך קשה אבל משמעותי, לשפר את הכושר הגופני.",
+‎            "מכינת אור ירושלים כי באמת מצאתי את עצמי שם ביום הפתוח."
+        ];
+
+        // --- AI LOGIC: INSIGHTS GENERATION ---
+        async function generateAIAnalysis() {
+            const output = document.getElementById('aiOutput');
+            const container = document.getElementById('aiResponseContainer');
+            const btn = document.getElementById('generateInsights');
+
+            container.classList.remove('hidden');
+            output.innerHTML = '<span class="loading-dots">מנתח נתונים ומייצר תובנות חינוכיות</span>';
+            btn.disabled = true;
+
+            const prompt = `נתח את הנתונים הבאים מדו"ח מכינות 'אחריי!': 
+‎            1. ממוצע מסוגלות: ${mechinaStats.averages[0]}
+‎            2. ממוצע חוסן: ${mechinaStats.averages[1]}
+‎            3. שייכות לקהילה: ${mechinaStats.averages[3]}
+‎            4. מוטיבציה לפיקוד: ${mechinaStats.averages[4]}
+            
+‎            המשימה: כתוב סיכום קצר (3 פסקאות) בטון מקצועי וחינוכי. 
+‎            פסקה 1: ניתוח המצב הקיים והפער בין מוטיבציה לחוסן.
+‎            פסקה 2: דגשים לעבודה עם נשים מול גברים (בהתחשב בשייכות קהילתית גבוהה אצל נשים).
+‎            פסקה 3: 3 המלצות פרקטיות למנהלי המכינות לשנה הקרובה.`;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                });
+
+                const data = await response.json();
+                const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "מצטערים, לא ניתן היה להפיק ניתוח כרגע.";
+                output.innerText = text;
+            } catch (error) {
+                output.innerText = "שגיאה בחיבור לשירות הניתוח. אנא נסו שוב מאוחר יותר.";
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // --- AI LOGIC: QUOTE SYNTHESIS ---
+        async function synthesizeQuotes() {
+            const output = document.getElementById('narrativeOutput');
+            const container = document.getElementById('narrativeContainer');
+            
+            container.classList.remove('hidden');
+            output.innerHTML = '<span class="loading-dots">מזקק את קולות החניכים</span>';
+
+            const prompt = `הפוך את הציטוטים הבאים לפסקת נרטיב מרגשת אחת, בגוף ראשון רבים (חניכי המכינה), המתארת את המהות של שנת המכינה ב'אחריי!': 
+            ${rawQuotes.join(' | ')}`;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                });
+
+                const data = await response.json();
+                const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+                output.innerText = text;
+            } catch (e) {
+                output.innerText = "התהליך החינוכי מתחיל במילים... (שגיאה בייצור הנרטיב)";
+            }
+        }
+
+        // --- STANDARD CHARTS INITIALIZATION ---
+        function initCharts() {
+            // Radar
+            new Chart(document.getElementById('radarChart'), {
+                type: 'radar',
+                data: {
+                    labels: mechinaStats.labels,
+                    datasets: [{
+                        label: 'פרופיל חניך',
+                        data: mechinaStats.averages,
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        borderColor: '#4f46e5',
+                        borderWidth: 3
+                    }]
+                },
+                options: { maintainAspectRatio: false }
+            });
+
+            // Gender
+            new Chart(document.getElementById('genderBarChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['חוסן', 'שייכות', 'מוטיבציה'],
+                    datasets: [
+                        { label: 'נשים', data: [3.41, 4.38, 3.61], backgroundColor: '#ec4899' },
+                        { label: 'גברים', data: [3.55, 4.25, 4.15], backgroundColor: '#3b82f6' }
+                    ]
+                },
+                options: { maintainAspectRatio: false }
+            });
+        }
+
+        // Render Quotes
+        function renderQuotes() {
+            const grid = document.getElementById('quotesGrid');
+            rawQuotes.forEach(q => {
+                const div = document.createElement('div');
+                div.className = 'card bg-slate-50 border-none';
+                div.innerHTML = `<p class="italic text-slate-700">"${q}"</p>`;
+                grid.appendChild(div);
+            });
+        }
+
+        window.onload = () => {
+            initCharts();
+            renderQuotes();
+        };
+    </script>
+</body>
+</html>
